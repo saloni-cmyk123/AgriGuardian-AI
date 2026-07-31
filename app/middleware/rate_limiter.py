@@ -1,0 +1,13 @@
+try:
+    from slowapi import Limiter
+    from slowapi.util import get_remote_address
+    from app.config.settings import settings
+
+    limiter = Limiter(
+        key_func=get_remote_address,
+        default_limits=[settings.RATE_LIMIT_PER_MINUTE]
+    )
+    SLOWAPI_AVAILABLE = True
+except ImportError:
+    limiter = None
+    SLOWAPI_AVAILABLE = False

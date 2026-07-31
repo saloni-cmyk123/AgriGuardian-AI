@@ -1,0 +1,20 @@
+services:
+  - type: web
+    name: agriguardian-ai-backend
+    env: python
+    region: singapore
+    buildCommand: "pip install -r requirements.txt"
+    startCommand: "uvicorn main:app --host 0.0.0.0 --port $PORT"
+    envVars:
+      - key: ENVIRONMENT
+        value: production
+      - key: MONGODB_URL
+        sync: false
+      - key: MONGODB_DB_NAME
+        value: agriguardian_db
+      - key: JWT_SECRET_KEY
+        generateValue: true
+      - key: JWT_ALGORITHM
+        value: HS256
+      - key: ALLOWED_ORIGINS
+        value: "*"
