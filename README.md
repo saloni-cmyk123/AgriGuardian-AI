@@ -1,79 +1,103 @@
-# AgriGuardian AI - Backend Service
+# 🌿 AgriGuardian AI
 
-An enterprise-grade, scalable, production-ready FastAPI & MongoDB backend for **AgriGuardian AI** — an AI-powered agricultural intelligence platform.
+## Predict. Protect. Prosper.
 
----
-
-## 🌟 Features & AI Capabilities
-
-- **JWT Authentication & User Management**: Secure role-based authorization (Farmer, Agronomist, Admin) with argon2/bcrypt password hashing.
-- **Farm & Crop Management**: Geo-spatial location tracking, soil profile evaluation, and crop growth stage monitoring.
-- **Crop Disease Detection Engine**: Leaf symptom and visual classification with Explainable AI (XAI) recommendations, organic remedies, and chemical treatments.
-- **AgriTwin Digital Twin Engine**: Physics-based simulation of soil moisture decay, evapotranspiration, and 48-hour irrigation urgency.
-- **National Crop Intelligence Engine**: Macro-regional agricultural analytics, satellite greenness (NDVI) monitoring, and trans-boundary pest warning systems.
-- **Government Scheme Recommendation API**: Profile-based matching engine for central and state subsidy schemes.
-- **Multilingual AI Agronomist Chatbot**: Conversational assistant with persistent chat session history.
-- **Predictive AI Engine**: Multi-factorial crop yield forecasting and pest outbreak risk estimation models.
+AgriGuardian AI is an AI-powered agricultural intelligence platform that helps farmers detect crop diseases, receive AI-powered treatment recommendations, monitor farm health using AgriTwin Digital Twin technology, access weather forecasts, market prices, and government schemes.
 
 ---
 
-## 🏗️ Project Architecture
+## 🚀 Features
 
-```
-AgriGuardian-AI/
-├── app/
-│   ├── api/                  # API Controllers & Routers
-│   │   └── routes/           # Endpoint handlers (auth, farms, disease, etc.)
-│   ├── models/               # MongoDB & Pydantic v2 Schemas
-│   ├── services/             # Core Business Logic Layer
-│   ├── ai/                   # Modular AI Engines & XAI Formatter
-│   ├── database/             # MongoDB Motor async client setup
-│   ├── middleware/           # Logging & Rate Limiting Middlewares
-│   ├── config/               # Settings & Environment configs
-│   └── utils/                # Security, JWT, Logger & Exception utilities
-├── docs/
-│   └── SYSTEM_DESIGN.md      # Comprehensive Architecture & Hackathon Presentation
-├── main.py                   # FastAPI Application Entrypoint
-├── Dockerfile                # Multi-stage Docker build
-├── docker-compose.yml        # Multi-container orchestration
-├── render.yaml               # Render Deployment Blueprint
-└── requirements.txt          # Production Python Dependencies
-```
+- 🌱 AI Crop Disease Detection
+- 🧠 Explainable AI (XAI)
+- 🌾 AgriTwin Digital Twin
+- 📊 Farmer Dashboard
+- 🌦 Weather Intelligence
+- 💹 Market Price Intelligence
+- 🏛 Government Scheme Recommendation
+- 🤖 AI Agronomist Chatbot
+- 🔒 JWT Authentication
+- 🗄 MongoDB Database
+- ⚡ FastAPI Backend
+- 💻 Next.js Frontend
 
 ---
 
-## 🚀 Quick Start
+## 🛠 Tech Stack
 
-### Local Setup with Virtual Environment
+### Frontend
+- Next.js
+- TypeScript
+- Tailwind CSS
 
-1. **Clone & Setup Virtual Environment**:
-   ```bash
-   python -m venv venv
-   source venv/bin/activate  # On Windows: venv\Scripts\activate
-   pip install -r requirements.txt
-   ```
+### Backend
+- FastAPI
+- Python
+- MongoDB
 
-2. **Run Server**:
-   ```bash
-   uvicorn main:app --reload --port 8000
-   ```
-
-3. **Access Interactive API Docs**:
-   - Swagger UI: [http://localhost:8000/docs](http://localhost:8000/docs)
-   - ReDoc: [http://localhost:8000/redoc](http://localhost:8000/redoc)
+### AI
+- Computer Vision
+- Explainable AI (XAI)
 
 ---
 
-## 🐳 Docker Setup
+## ⚙ Installation
 
-Run the entire backend stack with local MongoDB using Docker Compose:
+### Backend
 
 ```bash
-docker-compose up --build
+pip install -r requirements.txt
+python -m uvicorn main:app --reload
+```
+
+### Frontend
+
+```bash
+cd frontend
+npm install
+npm run dev
 ```
 
 ---
 
-## ☁️ Deployment on Render
+## 📚 API Documentation
 
-This project is deployment-ready for [Render](https://render.com). Simply connect your repository and Render will automatically detect `render.yaml`.
+```
+http://localhost:8000/docs
+```
+
+---
+
+## 👨‍💻 Team
+
+**Project:** AgriGuardian AI
+
+Backend Developer
+- Saloni Nautiyal
+
+Frontend
+- Sukhmeen Kaur
+
+AI / ML
+- Saloni Nautiyal and Sukhmeen Kaur
+
+---
+
+## 📸 Modules
+
+- Authentication
+- Farm Management
+- Crop Management
+- Disease Detection
+- Explainable AI
+- AgriTwin Digital Twin
+- Weather Intelligence
+- Market Intelligence
+- Government Scheme Recommendation
+- AI Chatbot
+- Predictive Analytics
+- Farmer Dashboard
+
+---
+
+© 2026 AgriGuardian AI
