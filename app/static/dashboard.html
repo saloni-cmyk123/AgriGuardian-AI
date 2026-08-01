@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AgriGuardian AI - Farmer Intelligence & Disease XAI Dashboard</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-dark: #0a110d;
+            --card-bg: rgba(18, 30, 22, 0.75);
+            --card-border: rgba(56, 142, 60, 0.25);
+            --accent-green: #2e7d32;
+            --accent-light: #4caf50;
+            --accent-gold: #ffb300;
+            --accent-red: #e53935;
+            --text-main: #f1f8f3;
+            --text-sub: #a3c2ab;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Outfit', 'Inter', sans-serif;
+            background: linear-gradient(135deg, #070d09 0%, #0d1a12 50%, #061009 100%);
+            color: var(--text-main);
+            min-height: 100vh;
+            padding: 24px;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 16px 24px;
+            background: var(--card-bg);
+            backdrop-filter: blur(12px);
+            border: 1px solid var(--card-border);
+            border-radius: 16px;
+            margin-bottom: 24px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .brand-icon {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, #4caf50, #2e7d32);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+        }
+
+        .brand-title {
+            font-size: 22px;
+            font-weight: 700;
+            background: linear-gradient(90deg, #81c784, #a5d6a7);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .status-badge {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(76, 175, 80, 0.15);
+            border: 1px solid rgba(76, 175, 80, 0.4);
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 13px;
+            color: #81c784;
+        }
+
+        .pulse-dot {
+            width: 8px;
+            height: 8px;
+            background: #81c784;
+            border-radius: 50%;
+            box-shadow: 0 0 8px #81c784;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { opacity: 0.4; }
+            50% { opacity: 1; }
+            100% { opacity: 0.4; }
+        }
+
+        .grid-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 24px;
+        }
+
+        @media (max-width: 992px) {
+            .grid-container {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .card {
+            background: var(--card-bg);
+            backdrop-filter: blur(12px);
+            border: 1px solid var(--card-border);
+            border-radius: 20px;
+            padding: 24px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            transition: transform 0.3s ease, border-color 0.3s ease;
+        }
+
+        .card:hover {
+            border-color: rgba(76, 175, 80, 0.5);
+        }
+
+        .card-title {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 16px;
+            color: #a5d6a7;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .upload-area {
+            border: 2px dashed rgba(76, 175, 80, 0.4);
+            border-radius: 16px;
+            padding: 32px;
+            text-align: center;
+            background: rgba(10, 20, 14, 0.4);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .upload-area:hover {
+            border-color: #81c784;
+            background: rgba(46, 125, 50, 0.1);
+        }
+
+        .btn {
+            background: linear-gradient(135deg, #388e3c, #1b5e20);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 10px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            margin-top: 16px;
+        }
+
+        .btn:hover {
+            background: linear-gradient(135deg, #4caf50, #2e7d32);
+            box-shadow: 0 4px 16px rgba(76, 175, 80, 0.4);
+        }
+
+        .xai-preview {
+            width: 100%;
+            max-height: 320px;
+            border-radius: 12px;
+            object-fit: contain;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            background: #000;
+            margin-top: 16px;
+        }
+
+        .metrics-row {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+
+        .metric-box {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 12px;
+            padding: 14px;
+            text-align: center;
+        }
+
+        .metric-val {
+            font-size: 20px;
+            font-weight: 700;
+            color: #81c784;
+        }
+
+        .metric-lbl {
+            font-size: 12px;
+            color: var(--text-sub);
+            margin-top: 4px;
+        }
+
+        .tag-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 8px;
+        }
+
+        .tag {
+            background: rgba(76, 175, 80, 0.15);
+            color: #a5d6a7;
+            padding: 6px 12px;
+            border-radius: 8px;
+            font-size: 13px;
+            border: 1px solid rgba(76, 175, 80, 0.3);
+        }
+
+        .tag.chem {
+            background: rgba(255, 179, 0, 0.15);
+            color: #ffe082;
+            border-color: rgba(255, 179, 0, 0.3);
+        }
+
+        .step-item {
+            display: flex;
+            gap: 12px;
+            padding: 10px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            font-size: 14px;
+            color: var(--text-main);
+        }
+
+        .step-num {
+            width: 24px;
+            height: 24px;
+            background: #2e7d32;
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            font-weight: 700;
+            flex-shrink: 0;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="header">
+        <div class="brand">
+            <div class="brand-icon">🌿</div>
+            <div>
+                <div class="brand-title">AgriGuardian AI</div>
+                <div style="font-size: 12px; color: var(--text-sub);">AI Crop Disease Detection & Digital Twin Engine</div>
+            </div>
+        </div>
+        <div class="status-badge">
+            <div class="pulse-dot"></div>
+            <span>AgriTwin Engine Active</span>
+        </div>
+    </div>
+
+    <div class="grid-container">
+
+        <!-- Upload & Analysis Card -->
+        <div class="card">
+            <div class="card-title">📷 Crop Leaf Disease AI Scanner</div>
+            
+            <div class="upload-area" onclick="document.getElementById('fileInput').click()">
+                <div style="font-size: 36px; margin-bottom: 8px;">🌱</div>
+                <div style="font-size: 15px; font-weight: 500; color: #a5d6a7;">Click or Drag Leaf Image to Upload</div>
+                <div style="font-size: 12px; color: var(--text-sub); margin-top: 4px;">Supports JPEG, PNG, WEBP formats</div>
+                <input type="file" id="fileInput" accept="image/*" style="display:none;" onchange="handleImageUpload(event)">
+            </div>
+
+            <div style="margin-top: 16px; display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+                <div>
+                    <label style="font-size: 12px; color: var(--text-sub);">Crop Name</label>
+                    <input type="text" id="cropNameInput" value="Wheat" style="width:100%; padding:8px 12px; background:rgba(0,0,0,0.3); border:1px solid var(--card-border); color:#fff; border-radius:8px; margin-top:4px;">
+                </div>
+                <div>
+                    <label style="font-size: 12px; color: var(--text-sub);">Symptoms (Optional)</label>
+                    <input type="text" id="symptomsInput" placeholder="Yellow stripes on leaves..." style="width:100%; padding:8px 12px; background:rgba(0,0,0,0.3); border:1px solid var(--card-border); color:#fff; border-radius:8px; margin-top:4px;">
+                </div>
+            </div>
+
+            <button class="btn" onclick="runDiagnosis()" style="width: 100%; justify-content: center;">
+                <span>⚡ Run AI XAI Disease Diagnostics</span>
+            </button>
+
+            <div id="xaiVisualContainer" style="display:none; margin-top: 20px;">
+                <div style="font-size: 14px; font-weight: 600; color: #ffe082;">🎯 Explainable AI (XAI) Lesion Heatmap Overlay</div>
+                <img id="xaiImageOverlay" class="xai-preview" src="" alt="XAI Lesion Highlight">
+            </div>
+        </div>
+
+        <!-- Report & Recommendation Card -->
+        <div class="card">
+            <div class="card-title">📊 Diagnostic Report & AgriTwin Sync</div>
+
+            <div class="metrics-row">
+                <div class="metric-box">
+                    <div class="metric-val" id="resDisease">--</div>
+                    <div class="metric-lbl">Detected Disease</div>
+                </div>
+                <div class="metric-box">
+                    <div class="metric-val" id="resConfidence">0%</div>
+                    <div class="metric-lbl">AI Confidence</div>
+                </div>
+                <div class="metric-box">
+                    <div class="metric-val" id="resSeverity" style="color:#ffb300;">--</div>
+                    <div class="metric-lbl">Severity Level</div>
+                </div>
+            </div>
+
+            <div style="background: rgba(0,0,0,0.25); padding: 16px; border-radius: 12px; margin-bottom: 16px; border: 1px solid rgba(255,255,255,0.05);">
+                <div style="font-size: 13px; font-weight: 600; color: #81c784; margin-bottom: 6px;">🧠 XAI Explanation Rationale</div>
+                <div id="resExplanation" style="font-size: 13px; color: var(--text-main); line-height: 1.5;">
+                    Upload a leaf image or select parameters to execute Explainable AI classification.
+                </div>
+            </div>
+
+            <div style="margin-bottom: 16px;">
+                <div style="font-size: 13px; font-weight: 600; color: #ffe082; margin-bottom: 6px;">💊 Recommended Suitable Medicine</div>
+                <div class="tag-list" id="resMedicine">
+                    <span class="tag chem">Chemical: Pending scan</span>
+                    <span class="tag">Organic: Pending scan</span>
+                </div>
+            </div>
+
+            <div style="margin-bottom: 16px;">
+                <div style="font-size: 13px; font-weight: 600; color: #a5d6a7; margin-bottom: 6px;">📋 Immediate Treatment Protocol</div>
+                <div id="resTreatmentSteps">
+                    <div class="step-item"><div class="step-num">1</div><span>Select leaf image and click Run AI Diagnostics</span></div>
+                </div>
+            </div>
+
+            <div>
+                <div style="font-size: 13px; font-weight: 600; color: #81c784; margin-bottom: 6px;">🛡️ Long-term Preventive Measures</div>
+                <div class="tag-list" id="resPreventive">
+                    <span class="tag">Crop Rotation</span>
+                    <span class="tag">Aerated Spacing</span>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        let selectedFile = null;
+
+        function handleImageUpload(event) {
+            const file = event.target.files[0];
+            if (file) {
+                selectedFile = file;
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    document.getElementById('xaiImageOverlay').src = e.target.result;
+                    document.getElementById('xaiVisualContainer').style.display = 'block';
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+
+        async function runDiagnosis() {
+            const cropName = document.getElementById('cropNameInput').value || 'Wheat';
+            const symptoms = document.getElementById('symptomsInput').value || '';
+
+            const formData = new FormData();
+            formData.append('crop_name', cropName);
+            formData.append('symptoms_description', symptoms);
+            if (selectedFile) {
+                formData.append('file', selectedFile);
+            }
+
+            try {
+                // Diagnostic endpoint API call
+                const response = await fetch('/api/v1/disease/upload-diagnose', {
+                    method: 'POST',
+                    body: formData
+                });
+                
+                const res = await response.json();
+                if (res.success && res.data) {
+                    const d = res.data;
+                    document.getElementById('resDisease').innerText = d.disease_detected || 'Detected';
+                    document.getElementById('resConfidence').innerText = (d.confidence_score * 100).toFixed(0) + '%';
+                    document.getElementById('resSeverity').innerText = d.severity_level || 'Moderate';
+                    document.getElementById('resExplanation').innerText = d.explanation || '';
+                    
+                    if (d.highlighted_image_url) {
+                        document.getElementById('xaiImageOverlay').src = d.highlighted_image_url;
+                        document.getElementById('xaiVisualContainer').style.display = 'block';
+                    }
+
+                    // Populate Medicines
+                    let medHTML = '';
+                    if (d.suitable_medicine && d.suitable_medicine.chemical) {
+                        d.suitable_medicine.chemical.forEach(m => { medHTML += `<span class="tag chem">🧪 ${m}</span>`; });
+                    }
+                    if (d.suitable_medicine && d.suitable_medicine.organic) {
+                        d.suitable_medicine.organic.forEach(m => { medHTML += `<span class="tag">🌿 ${m}</span>`; });
+                    }
+                    document.getElementById('resMedicine').innerHTML = medHTML || '<span class="tag">None</span>';
+
+                    // Populate Treatment Steps
+                    let stepHTML = '';
+                    if (d.treatment_steps && d.treatment_steps.length > 0) {
+                        d.treatment_steps.forEach((s, idx) => {
+                            stepHTML += `<div class="step-item"><div class="step-num">${idx+1}</div><span>${s}</span></div>`;
+                        });
+                    }
+                    document.getElementById('resTreatmentSteps').innerHTML = stepHTML;
+
+                    // Populate Preventive
+                    let prevHTML = '';
+                    if (d.preventive_measures && d.preventive_measures.length > 0) {
+                        d.preventive_measures.forEach(p => { prevHTML += `<span class="tag">🛡️ ${p}</span>`; });
+                    }
+                    document.getElementById('resPreventive').innerHTML = prevHTML;
+                }
+            } catch (err) {
+                console.error("Diagnosis call failed:", err);
+            }
+        }
+    </script>
+</body>
+</html>

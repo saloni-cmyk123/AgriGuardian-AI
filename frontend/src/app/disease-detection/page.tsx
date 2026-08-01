@@ -2,7 +2,7 @@
 
 import React, { useState } from "react";
 import { PageWrapper } from "@/components/layout/PageWrapper";
-import { DiseaseUploader } from "@/components/features/DiseaseUploader";
+import { DiseaseUploader, DiseaseDiagnosisResult } from "@/components/features/DiseaseUploader";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Table, TableHeader, TableRow, TableHead, TableBody, TableCell } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
@@ -10,15 +10,39 @@ import { Button } from "@/components/ui/button";
 import { Scan, History, Download, Filter, Search, CheckCircle2, ShieldAlert } from "lucide-react";
 import { useToast } from "@/context/ToastContext";
 
+interface ScanHistoryRow {
+  id: string;
+  date: string;
+  crop: string;
+  disease: string;
+  confidence: string;
+  status: "High Risk" | "Moderate" | "Low Risk";
+  remedy: string;
+}
+
 export default function DiseaseDetectionPage() {
   const { addToast } = useToast();
 
-  const scanHistory = [
+  const [scanHistory, setScanHistory] = useState<ScanHistoryRow[]>([
     { id: "SC-901", date: "Jul 31, 2026", crop: "Wheat (HD-3086)", disease: "Yellow Rust (Puccinia striiformis)", confidence: "96.8%", status: "High Risk", remedy: "Propiconazole 25% EC" },
-    { id: "SC-894", date: "Jul 28, 2026", crop: "Tomato (Hybrid Red)", disease: "Late Blight (Phytophthora)", confidence: "98.2%", status: "High Risk", remedy: "Copper Hydroxide Spray" },
+    { id: "SC-894", date: "Jul 28, 2026", crop: "Hybrid Red Tomato", disease: "Late Blight (Phytophthora)", confidence: "98.2%", status: "High Risk", remedy: "Copper Hydroxide Spray" },
     { id: "SC-881", date: "Jul 22, 2026", crop: "Bt Cotton", disease: "Cotton Leaf Curl Virus", confidence: "94.5%", status: "Moderate", remedy: "Imidacloprid 17.8% SL" },
     { id: "SC-870", date: "Jul 15, 2026", crop: "Paddy (Samba)", disease: "Leaf Spot (Helminthosporium)", confidence: "92.1%", status: "Low Risk", remedy: "Mancozeb 75% WP" },
-  ];
+  ]);
+
+  const handleDiagnosisComplete = (result: DiseaseDiagnosisResult) => {
+    const newRow: ScanHistoryRow = {
+      id: result.id,
+      date: result.createdAt,
+      crop: result.cropName,
+      disease: result.diseaseName,
+      confidence: `${result.confidence}%`,
+      status: result.riskLevel === "High" ? "High Risk" : result.riskLevel === "Moderate" ? "Moderate" : "Low Risk",
+      remedy: result.chemicalRemedy || result.organicRemedy,
+    };
+
+    setScanHistory((prev) => [newRow, ...prev.filter((item) => item.id !== newRow.id)]);
+  };
 
   return (
     <PageWrapper className="space-y-8">
@@ -38,7 +62,7 @@ export default function DiseaseDetectionPage() {
       </div>
 
       {/* Main Interactive Uploader & Analyzer */}
-      <DiseaseUploader />
+      <DiseaseUploader onDiagnosisComplete={handleDiagnosisComplete} />
 
       {/* Historical Scan Log Table */}
       <Card className="p-6 space-y-4">

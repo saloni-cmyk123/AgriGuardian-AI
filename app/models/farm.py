@@ -1,5 +1,5 @@
 from datetime import datetime, timezone
-from typing import Optional, List
+from typing import Optional, List, Dict, Any
 from pydantic import BaseModel, Field
 
 class LocationCoordinates(BaseModel):
@@ -28,6 +28,8 @@ class FarmResponse(BaseModel):
     total_area_acres: float
     irrigation_source: str
     soil: SoilProfile
+    health_status: Optional[str] = Field(default="OPTIMAL", example="OPTIMAL / WARNING / CRITICAL")
+    latest_disease_report: Optional[Dict[str, Any]] = None
     created_at: datetime
 
 class FarmModel(BaseModel):
@@ -38,5 +40,8 @@ class FarmModel(BaseModel):
     total_area_acres: float
     irrigation_source: str
     soil: SoilProfile
+    health_status: Optional[str] = "OPTIMAL"
+    latest_disease_report: Optional[Dict[str, Any]] = None
     created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
     updated_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+

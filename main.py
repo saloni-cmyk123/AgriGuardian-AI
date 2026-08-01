@@ -55,8 +55,24 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+import os
+from fastapi.staticfiles import StaticFiles
+from fastapi.responses import FileResponse
+
 # Register API v1 Router
 app.include_router(api_router)
+
+# Mount Static Files Dashboard
+static_dir = os.path.join(os.path.dirname(__file__), "app", "static")
+if os.path.exists(static_dir):
+    app.mount("/static", StaticFiles(directory=static_dir), name="static")
+
+@app.get("/dashboard", tags=["Farmer Dashboard"])
+async def serve_dashboard():
+    dashboard_path = os.path.join(static_dir, "dashboard.html")
+    if os.path.exists(dashboard_path):
+        return FileResponse(dashboard_path)
+    return {"message": "Dashboard under construction"}
 
 @app.get("/", tags=["Health Check"])
 async def root():
@@ -64,7 +80,8 @@ async def root():
         "status": "online",
         "service": settings.PROJECT_NAME,
         "version": "1.0.0",
-        "docs": "/docs"
+        "docs": "/docs",
+        "dashboard": "/dashboard"
     }
 
 @app.get("/health", tags=["Health Check"])
