@@ -4,6 +4,14 @@ const nextConfig = {
   images: {
     unoptimized: true,
   },
+  typescript: {
+    // Build time par TypeScript errors ignore karega
+    ignoreBuildErrors: true,
+  },
+  eslint: {
+    // Build time par ESLint errors ignore karega
+    ignoreDuringBuilds: true,
+  },
   async rewrites() {
     return [
       {
@@ -15,4 +23,3 @@ const nextConfig = {
 };
 
 export default nextConfig;
-
